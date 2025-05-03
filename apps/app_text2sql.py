@@ -1,5 +1,4 @@
 
-from prompts.prompt import *
 from models.langchain_models import llm_qwen_14B
 from utils.util import *
 from langchain.prompts import PromptTemplate

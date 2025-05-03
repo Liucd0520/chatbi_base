@@ -22,6 +22,7 @@ async def Excel2DataBase(mysql_uri: str = 'mysql+pymysql://root:liucd123@localho
     file_path = f'{temp_dir.name}/{file.filename}'
     with open(file_path, 'wb') as f:
         f.write(file.file.read())
+        print(f'文件写入{file_path} 完成')
 
     excel2db(file_path,table_names, mysql_uri)
 

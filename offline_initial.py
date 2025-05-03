@@ -1,14 +1,14 @@
 import os
 import json
 from configs import config
-from prompts.prompt import *
+from module.prompt import *
 from models.langchain_models import llm_qwen_14B
 from langchain.prompts import PromptTemplate
 from langchain.schema.runnable import Runnable
 from schema_linking.meta_dict_gen import meta_data_gen
 from schema_linking.few_linking_gen import samples_gen
 from schema_linking.related_col_find import get_distinct_values
-from utils.util import create_str_chain, create_json_chain
+from module.structured_output import create_str_chain, create_json_chain
 
 def init(query_list=[], is_meta_data=True, is_schema_linking_gen=True, is_distinct_values_gen=True):
 

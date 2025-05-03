@@ -8,11 +8,13 @@ project_root = os.path.dirname(current_dir)
 if project_root not in sys.path:
     sys.path.append(project_root)
 
-from prompts.prompt import *
+from module.prompt import *
 from models.langchain_models import llm_qwen_14B
 from langchain.prompts import PromptTemplate
 from langchain.schema.runnable import Runnable
 from utils.util import *
+from module.structured_output import create_json_chain
+
 
 def samples_gen(query_list: list, schema: str, chain: Runnable) -> list:
     

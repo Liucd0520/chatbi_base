@@ -3,25 +3,28 @@ from langchain_openai import  ChatOpenAI
 from openai import OpenAI
 import numpy as np 
 
-llm_qwen_14B = ChatOpenAI(model="Qwen2.5-14B",  
+llm_qwen_14B = ChatOpenAI(model="text2sql2",  
                     # base_url='http://192.168.0.11:8011/v1', 
-                    base_url='http://172.31.24.23:8001/v1', 
+                    base_url='http://172.31.24.111:33071/v1', 
                     api_key='EMPTY',
                     temperature=0,
                     )
 
+llm_qwen_7B = ChatOpenAI(model="Qwen2.5-7B",  
+                    # base_url='http://192.168.0.11:8011/v1', 
+                    base_url='http://172.31.24.111:9888/v1', 
+                    api_key='EMPTY',
+                    temperature=0,
+                    )
 
-
+openai_api_key_emb = "EMPTY"
+openai_api_base_emb = 'http://172.31.24.111:33076/v1'
+client_emb = OpenAI(api_key=openai_api_key_emb,
+                base_url=openai_api_base_emb
+                )
 def embedding_bge(query_list):
-    openai_api_key = "EMPTY"
-    openai_api_base = 'http://172.31.24.23:8002/v1'
-
-    client = OpenAI(
-        api_key=openai_api_key,
-        base_url=openai_api_base,
-    )
-
-    responses = client.embeddings.create(
+    
+    responses = client_emb.embeddings.create(
         input=query_list,
         model='bge-large-embedding',
     )
@@ -31,4 +34,12 @@ def embedding_bge(query_list):
 
 
 embedding_bge(['你好'])
-llm_qwen_14B.invoke('你好')
+result = llm_qwen_14B.invoke('你好') 
+
+if __name__ == '__main__':
+    query = ['你好', 'hello']
+    result = embedding_bge(query * 100)
+    print(result[0])
+
+    result2 = embedding_bge(query[:1])
+    print(result2[0])

@@ -16,7 +16,7 @@ from langchain.prompts import PromptTemplate
 import time 
 from langchain_openai import  ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser, JsonOutputParser
-from prompts.prompt import *
+from module.prompt import *
 from utils.util import *
 import json 
 import copy 
@@ -34,6 +34,8 @@ def schema_linking(query: str,
                    examples: list = [], 
                    chain: Runnable = None):
     
+
+
     output = chain.invoke({"schema": schema, "query": query, "samples": examples})
     
     old_output = copy.deepcopy(output)
@@ -45,21 +47,25 @@ def schema_linking(query: str,
         if condition_field not in related_columns: # 条件字段要与字典库里的匹配
             continue
        
+        # 查询字典库，如果字典库里有，则更新
         renew_dict = {}
         for k, v in values_dict.items():  
             if condition_value in v:  
                 renew_dict.update({k: condition_value})
-        
+        # 如果字典库里有匹配上的，则更新，否则扔给非结构化字段
         if len(renew_dict) > 0: # 意味着有匹配上的
             output['condition_columns'].pop(condition_field) 
             output['condition_columns'].update(renew_dict)
-        else:   
-            unstructured_field = related_columns[-1]
-            # 意味着四级分类里的值没有与之对应的，那就扔给非结构化字段
-            output['condition_columns'].pop(condition_field)
-            output['condition_columns'].update({unstructured_field: condition_value})
+        else:    
+            # 意味着四级分类里的值没有与之对应的，当related_columns里最后一个字段不在标签体系里时则扔给非结构化字段
+            if related_columns[-1] not in values_dict.keys():  
+                unstructured_field = related_columns[-1]
+                output['condition_columns'].pop(condition_field)
+                output['condition_columns'].update({unstructured_field: condition_value})
+            else:
+                pass 
 
-    return  old_output, output
+    return  output
 
 
 def sql_gen(query: str, columns: dict, schema: str, chain: Runnable):
@@ -67,5 +73,5 @@ def sql_gen(query: str, columns: dict, schema: str, chain: Runnable):
             
     output = chain.invoke({"schema": schema, "query": query, "columns": columns})
     
-    return output
+    return output['SQL']
 

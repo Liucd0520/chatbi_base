@@ -10,7 +10,7 @@ if project_root not in sys.path:
 
 from langchain_community.utilities import SQLDatabase
 from langchain.prompts import PromptTemplate
-from prompts.prompt import *
+from module.prompt import *
 from models.langchain_models import llm_qwen_14B
 from utils.util import *
 from langchain.schema.runnable import Runnable
